@@ -8,14 +8,15 @@
 
 namespace bobcat {
 
-class Image : public TextBox{
-    Fl_PNG_Image *original;
-    Fl_PNG_Image *img;
-    std::string fname;
-
+// Image class inheriting from TextBox
+class Image : public TextBox {
+    Fl_PNG_Image *original; // Original image
+    Fl_PNG_Image *img; // Current image
+    std::string fname; // Filename of the image
 
 public:
-    Image(int x, int y, int w, int h, std::string filename, std::string title = "" ) : TextBox(x, y, w, h, title.c_str()){
+    // Constructor to initialize the image with position, size, filename, and title
+    Image(int x, int y, int w, int h, std::string filename, std::string title = "" ) : TextBox(x, y, w, h, title.c_str()) {
         align(FL_ALIGN_CENTER);
         fname = filename;
         original = new Fl_PNG_Image(filename.c_str());
@@ -36,7 +37,8 @@ public:
         Fl_Box::align(FL_ALIGN_IMAGE_MASK);
     }
 
-    void increase(int amount = 10){
+    // Increase the size of the image
+    void increase(int amount = 10) {
         hide();
         w(w() + amount);
         h(h() + amount);
@@ -56,7 +58,8 @@ public:
         show();
     }
 
-    void decrease(int amount = 10){
+    // Decrease the size of the image
+    void decrease(int amount = 10) {
         hide();
         w(w() - amount);
         h(h() - amount);
@@ -76,19 +79,22 @@ public:
         show();
     }
 
-    void moveLeft(int amount = 10){
+    // Move the image to the left
+    void moveLeft(int amount = 10) {
         hide();
         x(x() - amount);
         show();
     }
 
-    void moveRight(int amount = 10){
+    // Move the image to the right
+    void moveRight(int amount = 10) {
         hide();
         x(x() + amount);
         show();
     }
 
-    void setImage(std::string filename){
+    // Set a new image
+    void setImage(std::string filename) {
         delete original;
         fname = filename;
         original = new Fl_PNG_Image(filename.c_str());
@@ -108,38 +114,46 @@ public:
         show();
     }
 
-    void align(Fl_Align alignment){
+    // Set the alignment of the image
+    void align(Fl_Align alignment) {
         Fl_Box::align(alignment);
         parent()->redraw();
     }
 
+    // Get the label size of the image
     Fl_Fontsize labelsize() {
         return Fl_Box::labelsize();
     }
 
+    // Set the label size of the image
     void labelsize(Fl_Fontsize pix) {
         Fl_Box::labelsize(pix);
         parent()->redraw();
     }
 
+    // Get the label color of the image
     Fl_Color labelcolor() {
         return Fl_Box::labelcolor();
     }
 
+    // Set the label color of the image
     void labelcolor(Fl_Color color) {
         Fl_Box::labelcolor(color);
         parent()->redraw();
     }
 
+    // Get the label font of the image
     Fl_Font labelfont() {
         return Fl_Box::labelfont();
     }
 
+    // Set the label font of the image
     void labelfont(Fl_Font f) {
         Fl_Box::labelfont(f);
         parent()->redraw();
     }
     
+    // Friend declaration for AppTest struct
     friend struct ::AppTest;
 };
 

@@ -5,48 +5,56 @@
 #include <FL/Enumerations.H>
 #include <FL/Fl_Menu_Bar.H>
 #include <FL/Fl_Widget.H>
-
 #include <map>
 #include <vector>
 #include <functional>
 #include <iostream>
 
-namespace bobcat{
+namespace bobcat {
 
+// MenuItem class inheriting from Fl_Widget
 class MenuItem : public Fl_Widget {
-    std::string caption;
-    std::function<void(bobcat::Widget *)> onClickCb;
+    std::string caption; // Caption of the menu item
+    std::function<void(bobcat::Widget *)> onClickCb; // Callback function for click event
 
 public:
-    MenuItem(std::string caption) : Fl_Widget(0,0,0,0, caption.c_str()){
+    // Constructor to initialize the menu item with a caption
+    MenuItem(std::string caption) : Fl_Widget(0, 0, 0, 0, caption.c_str()) {
         onClickCb = nullptr;
         Fl_Widget::copy_label(caption.c_str());
         this->caption = caption;
     }
 
-    void onClick(std::function<void(bobcat::Widget *)> cb){
+    // Set the onClick callback function
+    void onClick(std::function<void(bobcat::Widget *)> cb) {
         onClickCb = cb;
     }
 
+    // Get the label of the menu item
     std::string label() const {
         return caption;
     }
 
-    void label(std::string s){
+    // Set the label of the menu item
+    void label(std::string s) {
         Fl_Widget::copy_label(s.c_str());
         caption = s;
     }
 
+    // Override the draw method (empty implementation)
     void draw() {}
 
+    // Friend declarations
     friend class Menu;
     friend struct ::AppTest;
 };
 
+// Menu class inheriting from Fl_Menu_Bar
 class Menu : public Fl_Menu_Bar {
-    std::map<int, MenuItem*> items;
+    std::map<int, MenuItem*> items; // Map to store menu items
 
-    static void handler(Fl_Widget *sender, void *data){
+    // Static handler function for menu item click events
+    static void handler(Fl_Widget *sender, void *data) {
         Fl_Menu_Bar *bar = (Fl_Menu_Bar *)sender;
         int index = bar->value();
 
@@ -54,15 +62,16 @@ class Menu : public Fl_Menu_Bar {
         MenuItem *curr = self->items[index];
         if (curr->onClickCb) curr->onClickCb(curr);
     }
-    std::vector<std::string> split(std::string s, char c = ' '){
+
+    // Helper function to split a string by a delimiter
+    std::vector<std::string> split(std::string s, char c = ' ') {
         const char *str = s.c_str();
         std::vector<std::string> result;
 
-        do
-        {
+        do {
             const char *begin = str;
 
-            while(*str != c && *str)
+            while (*str != c && *str)
                 str++;
 
             result.push_back(std::string(begin, str));
@@ -71,13 +80,14 @@ class Menu : public Fl_Menu_Bar {
         return result;
     }
 
-    std::string addPadding(std::string s){
+    // Helper function to add padding to a string
+    std::string addPadding(std::string s) {
         std::vector<std::string> tokens = split(s, '/');
         std::string result = tokens[0] + "/";
 
-        for (unsigned long i = 1; i < tokens.size(); i++){
+        for (unsigned long i = 1; i < tokens.size(); i++) {
             result += tokens[i] + "            ";
-            if (i < tokens.size() - 1){
+            if (i < tokens.size() - 1) {
                 result += "/";
             }
         }
@@ -86,22 +96,26 @@ class Menu : public Fl_Menu_Bar {
     }
 
 public:
-    Menu() : Fl_Menu_Bar(0, 0, 0, 0){
+    // Constructor to initialize the menu
+    Menu() : Fl_Menu_Bar(0, 0, 0, 0) {
         int pw = ((Fl_Widget *)parent())->w() + 4;
         box(FL_THIN_UP_BOX);
         resize(-2, 0, pw, 25);
     }
 
-    void addItem(MenuItem *item){
-        int pos =  add(addPadding(item->label()).c_str(), 0, handler, this);
+    // Add a menu item to the menu
+    void addItem(MenuItem *item) {
+        int pos = add(addPadding(item->label()).c_str(), 0, handler, this);
         items.insert(std::pair<int, MenuItem*>(pos, item));
     }
 
-    void addItemSep(MenuItem *item){
-        int pos =  add(addPadding(item->label()).c_str(), 0, handler, this, FL_MENU_DIVIDER);
+    // Add a menu item with a separator to the menu
+    void addItemSep(MenuItem *item) {
+        int pos = add(addPadding(item->label()).c_str(), 0, handler, this, FL_MENU_DIVIDER);
         items.insert(std::pair<int, MenuItem*>(pos, item));
     }
 
+    // Friend declaration for AppTest struct
     friend struct ::AppTest;
 };
 

@@ -2,55 +2,63 @@
 #define BOBCAT_UI_GROUP
 
 #include "bobcat_ui.h"
-
 #include <FL/Enumerations.H>
 #include <FL/Fl_Gl_Window.H>
 #include <FL/Fl_PNG_Image.H>
 #include <GL/gl.h>
-
 #include <string>
 #include <functional>
 
 namespace bobcat {
 
+// Group class inheriting from Fl_Group
 class Group : public Fl_Group {
 private:
-    std::string caption;
+    std::string caption; // Caption of the group
 
-    void init(){
+    // Initialize the callback functions to nullptr
+    void init() {
         onChangeCb = nullptr;
         onEnterCb = nullptr;
         onLeaveCb = nullptr;
     }
+
 protected:
+    // Callback functions for various events
     std::function<void(bobcat::Widget *)> onChangeCb;
     std::function<void(bobcat::Widget *)> onEnterCb;
     std::function<void(bobcat::Widget *)> onLeaveCb;
 
 public:
+    // Constructor to initialize the group with position, size, and title
     Group(int x, int y, int w, int h, std::string title = "") : Fl_Group(x, y, w, h, title.c_str()) { 
         init();
         caption = title;
         Fl_Widget::copy_label(caption.c_str());
     }
 
+    // Set the onChange callback function
     void onChange(std::function<void(bobcat::Widget *)> cb) {
         onChangeCb = cb;
     }
 
-    void onEnter(std::function<void(bobcat::Widget *)> cb){
+    // Set the onEnter callback function
+    void onEnter(std::function<void(bobcat::Widget *)> cb) {
         onEnterCb = cb;
     }
 
-    void onLeave(std::function<void(bobcat::Widget *)> cb){
+    // Set the onLeave callback function
+    void onLeave(std::function<void(bobcat::Widget *)> cb) {
         onLeaveCb = cb;
     }
 
+    // Get the label of the group
     std::string label() const {
         return caption;
     }
 
-    void label(std::string s){
+    // Set the label of the group
+    void label(std::string s) {
         Fl_Widget::copy_label(s.c_str());
         caption = s;
     }
@@ -63,8 +71,6 @@ public:
 
     friend struct ::AppTest;
 };
-
-
 
 }
 
