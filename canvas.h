@@ -12,160 +12,145 @@
 namespace bobcat {
 
 // Canvas class inheriting from Fl_Gl_Window
+/**
+ * @class Canvas_
+ * @brief A class representing a canvas that inherits from Fl_Gl_Window.
+ * 
+ * This class provides a canvas with various callback functions for handling events such as showing, hiding, mouse down, mouse up, and dragging.
+ */
 class Canvas_ : public Fl_Gl_Window {
     // Callback functions for various events
-    std::function<void(bobcat::Widget *)> onShowCb;
-    std::function<void(bobcat::Widget *)> onHideCb;
-    std::function<void(bobcat::Widget *)> willHideCb;
-    std::function<void(bobcat::Widget *, float, float)> onMouseDownCb;
-    std::function<void(bobcat::Widget *, float, float)> onDragCb;
-    std::function<void(bobcat::Widget *, float, float)> onMouseUpCb;
+    std::function<void(bobcat::Widget *)> onShowCb; ///< Callback function for the show event.
+    std::function<void(bobcat::Widget *)> onHideCb; ///< Callback function for the hide event.
+    std::function<void(bobcat::Widget *)> willHideCb; ///< Callback function for the will hide event.
+    std::function<void(bobcat::Widget *, float, float)> onMouseDownCb; ///< Callback function for the mouse down event.
+    std::function<void(bobcat::Widget *, float, float)> onDragCb; ///< Callback function for the drag event.
+    std::function<void(bobcat::Widget *, float, float)> onMouseUpCb; ///< Callback function for the mouse up event.
 
-    std::string caption; // Caption of the canvas
+    std::string caption; ///< Caption of the canvas.
 
     // Initialize the callback functions to nullptr
-    void init() {
-        onShowCb = nullptr;
-        onHideCb = nullptr;
-        willHideCb = nullptr;
-        onDragCb = nullptr;
-        onMouseDownCb = nullptr;
-        onDragCb = nullptr;
-        onMouseUpCb = nullptr;
-    }
+    /**
+     * @brief Initializes the callback functions to nullptr.
+     */
+    void init();
 
 public:
     // Constructor to initialize the canvas with width, height, and title
-    Canvas_(int w, int h, std::string title = "") : Fl_Gl_Window(w, h, title.c_str()) {
-        init(); 
-        caption = title; 
-        Fl_Gl_Window::copy_label(title.c_str());
-    }
+    /**
+     * @brief Constructs a Canvas_ object with the specified width, height, and title.
+     * 
+     * @param w Width of the canvas.
+     * @param h Height of the canvas.
+     * @param title Title of the canvas (default is an empty string).
+     */
+    Canvas_(int w, int h, std::string title = "");
 
     // Constructor to initialize the canvas with position, width, height, and title
-    Canvas_(int x, int y, int w, int h, std::string title = "") : Fl_Gl_Window(x, y, w, h, title.c_str()) {
-        init(); 
-        caption = title;
-        Fl_Gl_Window::copy_label(title.c_str());
-    }
+    /**
+     * @brief Constructs a Canvas_ object with the specified position, width, height, and title.
+     * 
+     * @param x X-coordinate of the canvas.
+     * @param y Y-coordinate of the canvas.
+     * @param w Width of the canvas.
+     * @param h Height of the canvas.
+     * @param title Title of the canvas (default is an empty string).
+     */
+    Canvas_(int x, int y, int w, int h, std::string title = "");
 
     // Pure virtual function to render the canvas
+    /**
+     * @brief Pure virtual function to render the canvas.
+     */
     virtual void render() = 0;
 
     // Handle events for the canvas
-    int handle(int event) override {
-        // printf("Event was %s - %d\n", fl_eventnames[event], event);
-        int ret = Fl_Gl_Window::handle(event);
-
-        if (event == FL_SHOW) {
-            if (onShowCb) onShowCb(this);
-        }
-        if (event == FL_HIDE) {
-            if (onHideCb) onHideCb(this);
-        }
-
-        for (int i = 0; i < children(); i++) {
-            if (Fl::event_inside(child(i))) {
-                return 0;
-            }
-        }
-
-        // if (event == FL_PUSH){
-        //     Fl::focus(this);
-        // }
-
-        float x = (2.0f * (Fl::event_x() / float(w()))) - 1.0f;
-        float y = 1.0f - (2.0f * (Fl::event_y() / float(h())));
-
-        if (x >= -1.0 && x <= 1.0 && y >= -1.0 && y <= 1.0) {
-            if (event == FL_RELEASE) {
-                if (onMouseUpCb) onMouseUpCb(this, x, y);
-            }
-            if (event == FL_PUSH) {
-                if (onMouseDownCb) onMouseDownCb(this, x, y);
-                return 1;
-            }
-            if (event == FL_DRAG) {
-                if (onDragCb) onDragCb(this, x, y);
-            }
-        }
-
-        return ret;
-    }
+    /**
+     * @brief Handles events for the canvas.
+     * 
+     * @param event The event to handle.
+     * @return int The result of the event handling.
+     */
+    int handle(int event) override;
 
     // Draw the canvas
-    void draw() override {
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-        glEnable(GL_POINT_SMOOTH);
-        glPointSize(7.0f);
-        glColor3f(0.0f, 0.0f, 0.0f);
-
-        render();
-
-        swap_buffers();
-    }
+    /**
+     * @brief Draws the canvas.
+     */
+    void draw() override;
 
     // Set the onShow callback function
-    void onShow(std::function<void(bobcat::Widget *)> cb) {
-        onShowCb = cb;
-    }
+    /**
+     * @brief Sets the onShow callback function.
+     * 
+     * @param cb The callback function to set.
+     */
+    void onShow(std::function<void(bobcat::Widget *)> cb);
 
     // Set the onHide callback function
-    void onHide(std::function<void(bobcat::Widget *)> cb) {
-        onHideCb = cb;
-    }
+    /**
+     * @brief Sets the onHide callback function.
+     * 
+     * @param cb The callback function to set.
+     */
+    void onHide(std::function<void(bobcat::Widget *)> cb);
 
     // Set the willHide callback function
-    void willHide(std::function<void(bobcat::Widget *)> cb) {
-        willHideCb = cb;
-        callback([](bobcat::Widget * sender, void *self) {
-            Canvas_ *win = (Canvas_ *)self;
-            win->willHideCb(win);
-        }, this);   
-    }
+    /**
+     * @brief Sets the willHide callback function.
+     * 
+     * @param cb The callback function to set.
+     */
+    void willHide(std::function<void(bobcat::Widget *)> cb);
 
     // Set the onDrag callback function
-    void onDrag(std::function<void(bobcat::Widget *, float, float)> cb) {
-        onDragCb = cb;
-    }
+    /**
+     * @brief Sets the onDrag callback function.
+     * 
+     * @param cb The callback function to set.
+     */
+    void onDrag(std::function<void(bobcat::Widget *, float, float)> cb);
 
     // Set the onMouseDown callback function
-    void onMouseDown(std::function<void(bobcat::Widget *, float, float)> cb) {
-        onMouseDownCb = cb;
-    }
+    /**
+     * @brief Sets the onMouseDown callback function.
+     * 
+     * @param cb The callback function to set.
+     */
+    void onMouseDown(std::function<void(bobcat::Widget *, float, float)> cb);
 
     // Set the onMouseUp callback function
-    void onMouseUp(std::function<void(bobcat::Widget *, float, float)> cb) {
-        onMouseUpCb = cb;
-    }
+    /**
+     * @brief Sets the onMouseUp callback function.
+     * 
+     * @param cb The callback function to set.
+     */
+    void onMouseUp(std::function<void(bobcat::Widget *, float, float)> cb);
 
     // Get the label of the canvas
-    std::string label() const {
-        return caption;
-    }
+    /**
+     * @brief Gets the label of the canvas.
+     * 
+     * @return std::string The label of the canvas.
+     */
+    std::string label() const;
 
     // Set the label of the canvas
-    void label(std::string s) {
-        Fl_Gl_Window::copy_label(s.c_str());
-        caption = s;
-    }
+    /**
+     * @brief Sets the label of the canvas.
+     * 
+     * @param s The label to set.
+     */
+    void label(std::string s);
 
     // Show the canvas
-    void show() override {
-        Fl_Gl_Window::show();
-        wait_for_expose();          // Supposedly makes show() synchronous
-        Fl::flush();                // Make sure to draw what needs to be drawn
-    }
+    /**
+     * @brief Shows the canvas.
+     */
+    void show() override;
 
     // Friend declaration for AppTest struct
     friend struct ::AppTest;
 };
 
 }
-
-#endif

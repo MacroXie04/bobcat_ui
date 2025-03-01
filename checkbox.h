@@ -8,145 +8,159 @@
 
 namespace bobcat {
 
-// Checkbox class inheriting from Fl_Check_Button
+/**
+ * @class Checkbox
+ * @brief A custom checkbox widget inheriting from Fl_Check_Button.
+ * 
+ * This class provides a checkbox widget with additional callback functionalities
+ * for various events such as click, enter, leave, and change.
+ */
 class Checkbox: public Fl_Check_Button {
-    std::string caption; // Caption of the checkbox
+    std::string caption; ///< Caption of the checkbox
 
     // Callback functions for various events
-    std::function<void(bobcat::Widget *)> onClickCb;
-    std::function<void(bobcat::Widget *)> onEnterCb;
-    std::function<void(bobcat::Widget *)> onLeaveCb;
-    std::function<void(bobcat::Widget *)> onChangeCb;
+    std::function<void(bobcat::Widget *)> onClickCb; ///< Callback for click event
+    std::function<void(bobcat::Widget *)> onEnterCb; ///< Callback for enter event
+    std::function<void(bobcat::Widget *)> onLeaveCb; ///< Callback for leave event
+    std::function<void(bobcat::Widget *)> onChangeCb; ///< Callback for change event
 
-    // Initialize the callback functions to nullptr
-    void init() {
-        onClickCb = nullptr;
-        onEnterCb = nullptr;
-        onLeaveCb = nullptr;
-        onChangeCb = nullptr;
-    }
+    /**
+     * @brief Initialize the callback functions to nullptr.
+     */
+    void init();
 
-    // Handle events for the checkbox
-    int handle(int event) {
-        int ret = Fl_Check_Button::handle(event);
-
-        if (event == FL_ENTER) {
-            if (onEnterCb) onEnterCb(this);
-        }
-        if (event == FL_LEAVE) {
-            if (onLeaveCb) onLeaveCb(this);
-        }
-        return ret;
-    }
+    /**
+     * @brief Handle events for the checkbox.
+     * 
+     * @param event The event to handle.
+     * @return int The result of the event handling.
+     */
+    int handle(int event);
 
 public:
-    // Constructor to initialize the checkbox with position, size, and caption
-    Checkbox(int x, int y, int w, int h, std::string caption = ""): Fl_Check_Button(x, y, w, h, caption.c_str()) {
-        init();
-        this->caption = caption;
-        Fl_Check_Button::copy_label(caption.c_str());
-    }
+    /**
+     * @brief Constructor to initialize the checkbox with position, size, and caption.
+     * 
+     * @param x The x position of the checkbox.
+     * @param y The y position of the checkbox.
+     * @param w The width of the checkbox.
+     * @param h The height of the checkbox.
+     * @param caption The caption of the checkbox.
+     */
+    Checkbox(int x, int y, int w, int h, std::string caption = "");
 
-    // Get the label of the checkbox
-    std::string label() const {
-        return caption;
-    }
+    /**
+     * @brief Get the label of the checkbox.
+     * 
+     * @return std::string The label of the checkbox.
+     */
+    std::string label() const;
 
-    // Set the label of the checkbox
-    void label(std::string s) {
-        Fl_Check_Button::copy_label(s.c_str());
-        caption = s;
-    }
+    /**
+     * @brief Set the label of the checkbox.
+     * 
+     * @param s The new label of the checkbox.
+     */
+    void label(std::string s);
 
-    // Set the onClick callback function
-    void onClick(std::function<void(bobcat::Widget *)> cb) {
-        onClickCb = cb;
-        callback([](bobcat::Widget* sender, void* self) {
-            Checkbox* butt = (Checkbox*) self;
-            butt->onClickCb(butt);
-        }, this);
-    }
+    /**
+     * @brief Set the onClick callback function.
+     * 
+     * @param cb The callback function to be called on click event.
+     */
+    void onClick(std::function<void(bobcat::Widget *)> cb);
 
-    // Set the onEnter callback function
-    void onEnter(std::function<void(bobcat::Widget *)> cb) {
-        onEnterCb = cb;
-    }
+    /**
+     * @brief Set the onEnter callback function.
+     * 
+     * @param cb The callback function to be called on enter event.
+     */
+    void onEnter(std::function<void(bobcat::Widget *)> cb);
 
-    // Set the onLeave callback function
-    void onLeave(std::function<void(bobcat::Widget *)> cb) {
-        onLeaveCb = cb;
-    }
+    /**
+     * @brief Set the onLeave callback function.
+     * 
+     * @param cb The callback function to be called on leave event.
+     */
+    void onLeave(std::function<void(bobcat::Widget *)> cb);
 
-    // Check if the checkbox is checked
-    bool checked() const {
-        return value() == 1;
-    }
+    /**
+     * @brief Check if the checkbox is checked.
+     * 
+     * @return bool True if the checkbox is checked, false otherwise.
+     */
+    bool checked() const;
 
-    // Check the checkbox
-    void check() {
-        set();
-        if (onChangeCb) onChangeCb(this);
-    }
-    
-    // Uncheck the checkbox
-    void uncheck() {
-        clear();
-        if (onChangeCb) onChangeCb(this);
-    }
+    /**
+     * @brief Check the checkbox.
+     */
+    void check();
 
-    // Set the onChange callback function
-    void onChange(std::function<void(bobcat::Widget *)> cb) {
-        onChangeCb = cb;
-        when(FL_WHEN_CHANGED);
-        callback([](bobcat::Widget* sender, void* self) {
-            Checkbox *in = (Checkbox*) self;
-            in->onChangeCb(in);
-        }, this);
-    }
+    /**
+     * @brief Uncheck the checkbox.
+     */
+    void uncheck();
 
-    // Set the alignment of the checkbox
-    void align(Fl_Align alignment) {
-        Fl_Check_Button::align(alignment);
-        parent()->redraw();
-    }
+    /**
+     * @brief Set the onChange callback function.
+     * 
+     * @param cb The callback function to be called on change event.
+     */
+    void onChange(std::function<void(bobcat::Widget *)> cb);
 
-    // Get the label size of the checkbox
-    Fl_Fontsize labelsize() {
-        return Fl_Check_Button::labelsize();
-    }
+    /**
+     * @brief Set the alignment of the checkbox.
+     * 
+     * @param alignment The alignment to set.
+     */
+    void align(Fl_Align alignment);
 
-    // Set the label size of the checkbox
-    void labelsize(Fl_Fontsize pix) {
-        Fl_Check_Button::labelsize(pix);
-        parent()->redraw();
-    }
+    /**
+     * @brief Get the label size of the checkbox.
+     * 
+     * @return Fl_Fontsize The label size of the checkbox.
+     */
+    Fl_Fontsize labelsize();
 
-    // Get the label color of the checkbox
-    Fl_Color labelcolor() {
-        return Fl_Check_Button::labelcolor();
-    }
+    /**
+     * @brief Set the label size of the checkbox.
+     * 
+     * @param pix The new label size in pixels.
+     */
+    void labelsize(Fl_Fontsize pix);
 
-    // Set the label color of the checkbox
-    void labelcolor(Fl_Color color) {
-        Fl_Check_Button::labelcolor(color);
-        parent()->redraw();
-    }
+    /**
+     * @brief Get the label color of the checkbox.
+     * 
+     * @return Fl_Color The label color of the checkbox.
+     */
+    Fl_Color labelcolor();
 
-    // Get the label font of the checkbox
-    Fl_Font labelfont() {
-        return Fl_Check_Button::labelfont();
-    }
+    /**
+     * @brief Set the label color of the checkbox.
+     * 
+     * @param color The new label color.
+     */
+    void labelcolor(Fl_Color color);
 
-    // Set the label font of the checkbox
-    void labelfont(Fl_Font f) {
-        Fl_Check_Button::labelfont(f);
-        parent()->redraw();
-    }
+    /**
+     * @brief Get the label font of the checkbox.
+     * 
+     * @return Fl_Font The label font of the checkbox.
+     */
+    Fl_Font labelfont();
 
-    // Set the focus to the checkbox
-    void take_focus() {
-        Fl_Check_Button::take_focus();
-    }
+    /**
+     * @brief Set the label font of the checkbox.
+     * 
+     * @param f The new label font.
+     */
+    void labelfont(Fl_Font f);
+
+    /**
+     * @brief Set the focus to the checkbox.
+     */
+    void take_focus();
 
     // Friend declaration for AppTest struct
     friend struct ::AppTest;

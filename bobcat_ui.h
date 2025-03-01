@@ -90,180 +90,116 @@ namespace bobcat {
     // Typedef for Fl_Widget
     typedef Fl_Widget Widget;
 
-    // Function to set the theme of the application
-    inline void theme(THEME newTheme = LIGHT){
-        Fl::visible_focus(0);
-        Fl::scheme("gtk+");
-
-        if (newTheme == DARK){
-            Fl::background(0x53, 0x53, 0x53);
-            Fl::background2(0x3A, 0x3A, 0x3A);
-            Fl::foreground(0xFF, 0xFF, 0xFF);
-            Fl::set_color(FL_INACTIVE_COLOR, 0x26, 0x26, 0x26);
-            Fl::set_color(FL_SELECTION_COLOR, 0xD6, 0xD6, 0xD6);
-            Fl_Tooltip::color(fl_rgb_color(0xFF, 0xFF, 0xCC));
-            Fl_Tooltip::textcolor(fl_rgb_color(0x00, 0x00, 0x00));
-        }
-        else if (newTheme == LIGHT){
-            Fl::background(0xCE, 0xCE, 0xCE);
-            Fl::background2(0xFC, 0xFC, 0xFC);
-            Fl::foreground(0x3C, 0x3C, 0x3C);
-            Fl::set_color(FL_INACTIVE_COLOR, 0x55, 0x55, 0x55);
-            Fl::set_color(FL_SELECTION_COLOR, 32768);
-            Fl_Tooltip::color(fl_rgb_color(0x0A, 0x0A, 0x0A));
-            Fl_Tooltip::textcolor(fl_rgb_color(0xFF, 0xFF, 0xFF));
-            currentTheme = LIGHT;
-        }
-        
-        currentTheme = newTheme;
-    
-        Fl::reload_scheme();
-    }
+    /**
+     * @brief Sets the theme of the application.
+     * 
+     * @param newTheme The new theme to set. Default is LIGHT.
+     */
+    inline void theme(THEME newTheme = LIGHT);
 
     // Application class
     class Application_ {
     public:
+        /**
+         * @brief Constructor to set the theme.
+         */
+        Application_();
 
-        // Constructor to set the theme
-        Application_() {
-            theme();
-        }
-
-        // Function to run the application
-        int run() const {
-            std::cout << "Bobcat UI Application Running..." << std::endl;
-            return Fl::run();
-        }
+        /**
+         * @brief Runs the application.
+         * 
+         * @return int The exit status of the application.
+         */
+        int run() const;
     };
 
-    // Function to update color using RGB values (double)
-    inline void updateColorRGB(double &r, double &g, double &b){
-        Fl::check();
-        usleep(10000);
-        double rr = r, gg = g, bb = b;
-        int result = fl_color_chooser("Select color", rr, gg, bb);
-        if (result){
-            r = rr;
-            g = gg;
-            b = bb;
-        }
-    }
-    
-    // Function to update color using RGB values (int)
-    inline void updateColorRGB(int &r, int &g, int &b){
-        Fl::check();
-        usleep(10000);
-        uchar rr = r, gg = g, bb = b;
-        int result = fl_color_chooser("Select color", rr, gg, bb);
-        if (result){
-            r = rr;
-            g = gg;
-            b = bb;
-        }
-    }
+    /**
+     * @brief Updates the color using RGB values (double).
+     * 
+     * @param r Red component (double).
+     * @param g Green component (double).
+     * @param b Blue component (double).
+     */
+    inline void updateColorRGB(double &r, double &g, double &b);
 
-    // Function to get text input from the user
+    /**
+     * @brief Updates the color using RGB values (int).
+     * 
+     * @param r Red component (int).
+     * @param g Green component (int).
+     * @param b Blue component (int).
+     */
+    inline void updateColorRGB(int &r, int &g, int &b);
+
+    /**
+     * @brief Gets text input from the user.
+     * 
+     * @param prompt The prompt message.
+     * @param placeholder The placeholder text. Default is an empty string.
+     * @param title The title of the input dialog. Default is "Text Input".
+     * @return std::string The user input.
+     */
     inline std::string textInput(
         std::string prompt, 
         std::string placeholder = "",
         std::string title = "Text Input"
-    ){
-        std::string result = "";
-        fl_message_title(title.c_str());
-        const char * temp = fl_input(prompt.c_str(), placeholder.c_str(), 0);
-        if (temp != nullptr) result = temp;
-        return result;
-    }
+    );
 
-    // Function to get password input from the user
+    /**
+     * @brief Gets password input from the user.
+     * 
+     * @param prompt The prompt message.
+     * @param title The title of the input dialog. Default is "Password Input".
+     * @return std::string The user input.
+     */
     inline std::string passwordInput(
         std::string prompt, 
         std::string title = "Password Input"
-    ){
-        std::string result = "";
-        fl_message_title(title.c_str());
-        const char * temp = fl_password(prompt.c_str(), "", 0);
-        if (temp != nullptr) result = temp;
-        return result;
-    }
+    );
 
-    // Function to wrap text to a specified line length
-    inline std::string wordWrap(const std::string& text, unsigned int lineLength) {
-        std::stringstream initial(text);
-        std::string wrappedText, word, line;
-        std::vector<std::string> lines;
-        std::string temp;
-        while(getline(initial, temp)){
-            lines.push_back(temp);
-        }
-        
-        for (size_t i = 0; i < lines.size(); i++){
-            std::stringstream ss(lines[i]);
-            while (ss >> word) {
-                if (line.empty() || line.length() + word.length() + 1 <= lineLength) {
-                    line += (line.empty() ? "" : " ") + word;
-                } else {
-                    wrappedText += line + '\n';
-                    line = word;
-                }
-            }
+    /**
+     * @brief Wraps text to a specified line length.
+     * 
+     * @param text The text to wrap.
+     * @param lineLength The maximum line length.
+     * @return std::string The wrapped text.
+     */
+    inline std::string wordWrap(const std::string& text, unsigned int lineLength);
 
-            if (!line.empty()) {
-                wrappedText += line;
-            }
-
-            if (i < lines.size()-1){
-                wrappedText += "\n";
-                line = "";
-            }
-            
-        }
-
-        return wrappedText;
-    }
-
-    // Function to show a message to the user
+    /**
+     * @brief Shows a message to the user.
+     * 
+     * @param message The message to show.
+     * @param title The title of the message dialog. Default is "Message".
+     */
     inline void showMessage(
         std::string message, 
         std::string title = "Message"
-    ) {
-        Fl::check();
-        usleep(10000);
-        message = wordWrap(message, 55);
-        fl_message_title(title.c_str());
-        fl_message(message.c_str(), 0);
-    }
+    );
 
-    // Function to show a confirmation dialog to the user
+    /**
+     * @brief Shows a confirmation dialog to the user.
+     * 
+     * @param message The message to show.
+     * @param positiveBtn The text for the positive button. Default is "Yes".
+     * @param negativeBtn The text for the negative button. Default is "No".
+     * @param title The title of the confirmation dialog. Default is "Confirm".
+     * @return int The user's choice (0 for negative, 1 for positive).
+     */
     inline int confirm (
         std::string message, 
         std::string positiveBtn = "Yes", 
         std::string negativeBtn = "No", 
         std::string title       = "Confirm"
-    ) {
-        Fl::check();
-        usleep(10000);
-        fl_message_title(title.c_str());
-        int result = fl_choice_n(
-            message.c_str(), 
-            negativeBtn.c_str(),
-            positiveBtn.c_str(), 
-            0,
-            0
-        );
+    );
 
-        return result;
-    }
-    
-    // Function to round a float to a specified precision
-    inline std::string roundFloat(float number, int precision = 2) {
-        std::stringstream ss;
-        ss << std::fixed;
-        ss.precision(precision);
-        ss << number;
-        return ss.str();
-    }
+    /**
+     * @brief Rounds a float to a specified precision.
+     * 
+     * @param number The number to round.
+     * @param precision The number of decimal places. Default is 2.
+     * @return std::string The rounded number as a string.
+     */
+    inline std::string roundFloat(float number, int precision = 2);
 
 }
-
-#endif

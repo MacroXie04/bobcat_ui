@@ -8,116 +8,135 @@
 
 namespace bobcat {
 
-// Button class inheriting from Fl_Button
+/**
+ * @class Button
+ * @brief A custom button class inheriting from Fl_Button.
+ * 
+ * This class provides additional functionality for handling button events
+ * such as click, enter, and leave. It also allows setting and getting various
+ * button properties like label, alignment, label size, label color, and label font.
+ */
 class Button: public Fl_Button {
-    std::string caption; // Caption of the button
+    std::string caption; ///< Caption of the button
 
     // Callback functions for various events
-    std::function<void(bobcat::Widget *)> onClickCb;
-    std::function<void(bobcat::Widget *)> onEnterCb;
-    std::function<void(bobcat::Widget *)> onLeaveCb;
+    std::function<void(bobcat::Widget *)> onClickCb; ///< Callback for click event
+    std::function<void(bobcat::Widget *)> onEnterCb; ///< Callback for enter event
+    std::function<void(bobcat::Widget *)> onLeaveCb; ///< Callback for leave event
 
-    // Initialize the callback functions to nullptr
-    void init() {
-        onClickCb = nullptr;
-        onEnterCb = nullptr;
-        onLeaveCb = nullptr;
-    }
+    /**
+     * @brief Initialize the callback functions to nullptr.
+     */
+    void init();
 
-    // Handle events for the button
-    int handle(int event) {
-        int ret = Fl_Button::handle(event);
-
-        if (event == FL_ENTER) {
-            if (onEnterCb) onEnterCb(this);
-        }
-        if (event == FL_LEAVE) {
-            if (onLeaveCb) onLeaveCb(this);
-        }
-        return ret;
-    }
+    /**
+     * @brief Handle events for the button.
+     * 
+     * @param event The event to handle.
+     * @return int The result of the event handling.
+     */
+    int handle(int event);
 
 public:
-    // Constructor to initialize the button with position, size, and caption
-    Button(int x, int y, int w, int h, std::string caption = ""): Fl_Button(x, y, w, h, caption.c_str()) {
-        init();
-        this->caption = caption;
-        Fl_Button::copy_label(caption.c_str());
-    }
+    /**
+     * @brief Constructor to initialize the button with position, size, and caption.
+     * 
+     * @param x The x-coordinate of the button.
+     * @param y The y-coordinate of the button.
+     * @param w The width of the button.
+     * @param h The height of the button.
+     * @param caption The caption of the button (default is an empty string).
+     */
+    Button(int x, int y, int w, int h, std::string caption = "");
 
-    // Get the label of the button
-    std::string label() const {
-        return caption;
-    }
+    /**
+     * @brief Get the label of the button.
+     * 
+     * @return std::string The label of the button.
+     */
+    std::string label() const;
 
-    // Set the label of the button
-    void label(std::string s) {
-        Fl_Button::copy_label(s.c_str());
-        caption = s;
-    }
+    /**
+     * @brief Set the label of the button.
+     * 
+     * @param s The new label of the button.
+     */
+    void label(std::string s);
 
-    // Set the onClick callback function
-    void onClick(std::function<void(bobcat::Widget *)> cb) {
-        onClickCb = cb;
-        callback([](bobcat::Widget* sender, void* self) {
-            Button* butt = (Button*) self;
-            butt->onClickCb(butt);
-        }, this);
-    }
+    /**
+     * @brief Set the onClick callback function.
+     * 
+     * @param cb The callback function to be called on click event.
+     */
+    void onClick(std::function<void(bobcat::Widget *)> cb);
 
-    // Set the onEnter callback function
-    void onEnter(std::function<void(bobcat::Widget *)> cb) {
-        onEnterCb = cb;
-    }
+    /**
+     * @brief Set the onEnter callback function.
+     * 
+     * @param cb The callback function to be called on enter event.
+     */
+    void onEnter(std::function<void(bobcat::Widget *)> cb);
 
-    // Set the onLeave callback function
-    void onLeave(std::function<void(bobcat::Widget *)> cb) {
-        onLeaveCb = cb;
-    }
+    /**
+     * @brief Set the onLeave callback function.
+     * 
+     * @param cb The callback function to be called on leave event.
+     */
+    void onLeave(std::function<void(bobcat::Widget *)> cb);
 
-    // Set the alignment of the button
-    void align(Fl_Align alignment) {
-        Fl_Button::align(alignment);
-        parent()->redraw();
-    }
+    /**
+     * @brief Set the alignment of the button.
+     * 
+     * @param alignment The alignment to set.
+     */
+    void align(Fl_Align alignment);
 
-    // Get the label size of the button
-    Fl_Fontsize labelsize() {
-        return Fl_Button::labelsize();
-    }
+    /**
+     * @brief Get the label size of the button.
+     * 
+     * @return Fl_Fontsize The label size of the button.
+     */
+    Fl_Fontsize labelsize();
 
-    // Set the label size of the button
-    void labelsize(Fl_Fontsize pix) {
-        Fl_Button::labelsize(pix);
-        parent()->redraw();
-    }
+    /**
+     * @brief Set the label size of the button.
+     * 
+     * @param pix The new label size in pixels.
+     */
+    void labelsize(Fl_Fontsize pix);
 
-    // Get the label color of the button
-    Fl_Color labelcolor() {
-        return Fl_Button::labelcolor();
-    }
+    /**
+     * @brief Get the label color of the button.
+     * 
+     * @return Fl_Color The label color of the button.
+     */
+    Fl_Color labelcolor();
 
-    // Set the label color of the button
-    void labelcolor(Fl_Color color) {
-        Fl_Button::labelcolor(color);
-        parent()->redraw();
-    }
+    /**
+     * @brief Set the label color of the button.
+     * 
+     * @param color The new label color.
+     */
+    void labelcolor(Fl_Color color);
 
-    // Get the label font of the button
-    Fl_Font labelfont() {
-        return Fl_Button::labelfont();
-    }
+    /**
+     * @brief Get the label font of the button.
+     * 
+     * @return Fl_Font The label font of the button.
+     */
+    Fl_Font labelfont();
 
-    // Set the label font of the button
-    void labelfont(Fl_Font f) {
-        Fl_Button::labelfont(f);
-        parent()->redraw();
-    }
+    /**
+     * @brief Set the label font of the button.
+     * 
+     * @param f The new label font.
+     */
+    void labelfont(Fl_Font f);
 
-    // Set the focus to the button
-    void take_focus() {
-        Fl_Button::take_focus();
-    }
+    /**
+     * @brief Set the focus to the button.
+     */
+    void take_focus();
 
     // Friend declaration for AppTest struct
     friend struct ::AppTest;

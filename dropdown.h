@@ -12,6 +12,123 @@
 
 // #include <FL/names.h>
 
+/**
+ * @file dropdown.h
+ * @namespace bobcat
+ * @class Dropdown
+ * @brief A custom dropdown class inheriting from Fl_Choice with additional functionalities.
+ *
+ * This class provides a dropdown widget with additional callback functionalities for various events.
+ */
+
+/**
+ * @brief Constructor to initialize the dropdown with position, size, and caption.
+ * @param x The x-coordinate of the dropdown.
+ * @param y The y-coordinate of the dropdown.
+ * @param w The width of the dropdown.
+ * @param h The height of the dropdown.
+ * @param caption The caption of the dropdown (default is an empty string).
+ */
+
+/**
+ * @brief Get the label of the dropdown.
+ * @return The label of the dropdown as a std::string.
+ */
+
+/**
+ * @brief Set the label of the dropdown.
+ * @param s The new label for the dropdown.
+ */
+
+/**
+ * @brief Get the text of the selected item.
+ * @return The text of the selected item as a std::string.
+ */
+
+/**
+ * @brief Add an item to the dropdown.
+ * @param item The item to be added to the dropdown.
+ * @return The index of the added item.
+ */
+
+/**
+ * @brief Set the selected item by index.
+ * @param index The index of the item to be selected.
+ */
+
+/**
+ * @brief Set the selected item by text.
+ * @param s The text of the item to be selected.
+ */
+
+/**
+ * @brief Get the index of the selected item.
+ * @return The index of the selected item.
+ */
+
+/**
+ * @brief Remove an item by index.
+ * @param i The index of the item to be removed.
+ */
+
+/**
+ * @brief Remove an item by text.
+ * @param s The text of the item to be removed.
+ */
+
+/**
+ * @brief Set the onEnter callback function.
+ * @param cb The callback function to be called when the mouse enters the dropdown.
+ */
+
+/**
+ * @brief Set the onLeave callback function.
+ * @param cb The callback function to be called when the mouse leaves the dropdown.
+ */
+
+/**
+ * @brief Set the onChange callback function.
+ * @param cb The callback function to be called when the selected item changes.
+ */
+
+/**
+ * @brief Set the alignment of the dropdown.
+ * @param alignment The alignment to be set for the dropdown.
+ */
+
+/**
+ * @brief Get the label size of the dropdown.
+ * @return The label size of the dropdown.
+ */
+
+/**
+ * @brief Set the label size of the dropdown.
+ * @param pix The new label size for the dropdown.
+ */
+
+/**
+ * @brief Get the label color of the dropdown.
+ * @return The label color of the dropdown.
+ */
+
+/**
+ * @brief Set the label color of the dropdown.
+ * @param color The new label color for the dropdown.
+ */
+
+/**
+ * @brief Get the label font of the dropdown.
+ * @return The label font of the dropdown.
+ */
+
+/**
+ * @brief Set the label font of the dropdown.
+ * @param f The new label font for the dropdown.
+ */
+
+/**
+ * @brief Set the focus to the dropdown.
+ */
 namespace bobcat {
 
 // Dropdown class inheriting from Fl_Choice

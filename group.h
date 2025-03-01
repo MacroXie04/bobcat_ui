@@ -11,7 +11,13 @@
 
 namespace bobcat {
 
-// Group class inheriting from Fl_Group
+/**
+ * @class Group
+ * @brief A class representing a group of widgets, inheriting from Fl_Group.
+ * 
+ * The Group class provides functionality to manage a group of widgets with 
+ * additional callback functions for various events such as change, enter, and leave.
+ */
 class Group : public Fl_Group {
 private:
     std::string caption; // Caption of the group

@@ -16,6 +16,10 @@
 
 namespace bobcat {
 
+/**
+ * @class HexagonButton
+ * @brief A custom button class that draws a hexagon shape and handles various events.
+
 // HexagonButton class inheriting from Fl_Button
 class HexagonButton: public Fl_Button{
     std::string caption; // Caption of the hexagon button

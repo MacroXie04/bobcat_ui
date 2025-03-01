@@ -15,167 +15,150 @@
 
 namespace bobcat {
 
-// FloatInput class inheriting from Fl_Input
-class FloatInput: public Fl_Input{
-    std::string caption; // Caption of the float input
+/**
+ * @class FloatInput
+ * @brief A class representing a float input widget, inheriting from Fl_Input.
+ */
+class FloatInput: public Fl_Input {
+    std::string caption; ///< Caption of the float input
 
     // Callback functions for various events
-    std::function<void(bobcat::Widget *)> onClickCb;
-    std::function<void(bobcat::Widget *)> onEnterCb;
-    std::function<void(bobcat::Widget *)> onLeaveCb;
-    std::function<void(bobcat::Widget *)> onChangeCb;
+    std::function<void(bobcat::Widget *)> onClickCb; ///< Callback for click event
+    std::function<void(bobcat::Widget *)> onEnterCb; ///< Callback for enter event
+    std::function<void(bobcat::Widget *)> onLeaveCb; ///< Callback for leave event
+    std::function<void(bobcat::Widget *)> onChangeCb; ///< Callback for change event
 
-    // Initialize the callback functions to nullptr
-    void init(){
-        onClickCb = nullptr;
-        onEnterCb = nullptr;
-        onLeaveCb = nullptr;
-        onChangeCb = nullptr;
-    }
+    /**
+     * @brief Initialize the callback functions to nullptr.
+     */
+    void init();
 
-    // Handle events for the float input
-    int handle(int event) {
-        // if (event == 8 || event == 9)
-        // printf("Event was %s (%d) - %s\n", fl_eventnames[event], event, value());
-        int ret = Fl_Input::handle(event);
-        if (event == FL_ENTER){
-            if (onEnterCb) onEnterCb(this);
-        }
-
-        if (event == FL_LEAVE){
-            if (onLeaveCb) onLeaveCb(this);
-        }
-
-        if (event == FL_RELEASE){
-            if (Fl::event_inside(this)){
-                if (Fl::focus() == this){
-                    if (onClickCb) onClickCb(this);
-                }
-            }
-        }
-
-        return ret;
-    }
+    /**
+     * @brief Handle events for the float input.
+     * @param event The event to handle.
+     * @return int The result of the event handling.
+     */
+    int handle(int event);
 
 public:
-    // Constructor to initialize the float input with position, size, and caption
-    FloatInput(int x, int y, int w, int h, std::string caption = ""): Fl_Input(x, y, w, h, caption.c_str()) {
-        init();
-        align(FL_ALIGN_TOP_LEFT);
-        this->caption = caption;
-        Fl_Input::copy_label(caption.c_str());
-        input_type(FL_FLOAT_INPUT);
-    }
+    /**
+     * @brief Constructor to initialize the float input with position, size, and caption.
+     * @param x The x position of the float input.
+     * @param y The y position of the float input.
+     * @param w The width of the float input.
+     * @param h The height of the float input.
+     * @param caption The caption of the float input.
+     */
+    FloatInput(int x, int y, int w, int h, std::string caption = "");
 
-    // Get the label of the float input
-    std::string label() const {
-        return caption;
-    }
+    /**
+     * @brief Get the label of the float input.
+     * @return std::string The label of the float input.
+     */
+    std::string label() const;
 
-    // Set the label of the float input
-    void label(std::string s){
-        Fl_Input::copy_label(s.c_str());
-        caption = s;
-    }
+    /**
+     * @brief Set the label of the float input.
+     * @param s The new label of the float input.
+     */
+    void label(std::string s);
 
-    // Get the value of the float input as a float
-    float value() const {
-        float temp = std::stof(Fl_Input::value());
-        return temp;
-    }
+    /**
+     * @brief Get the value of the float input as a float.
+     * @return float The value of the float input.
+     */
+    float value() const;
 
-    // Check if the float input is empty
-    bool empty() {
-        std::string value = Fl_Input::value();
-        if (value.empty()) return true;
-        return false;
-    }
+    /**
+     * @brief Check if the float input is empty.
+     * @return bool True if the float input is empty, false otherwise.
+     */
+    bool empty();
 
-    // Clear the value of the float input
-    void clear(){
-        Fl_Input::value("");
-        if (onChangeCb) onChangeCb(this);
-    }
+    /**
+     * @brief Clear the value of the float input.
+     */
+    void clear();
 
-    // Set the value of the float input
-    void value(float v){
-        Fl_Input::value(std::to_string(v).c_str());
-        if (onChangeCb) onChangeCb(this);
-    }
+    /**
+     * @brief Set the value of the float input.
+     * @param v The new value of the float input.
+     */
+    void value(float v);
 
-    // Set the onClick callback function
-    void onClick(std::function<void(bobcat::Widget *)> cb){
-        onClickCb = cb;
-    }
+    /**
+     * @brief Set the onClick callback function.
+     * @param cb The callback function to set.
+     */
+    void onClick(std::function<void(bobcat::Widget *)> cb);
 
-    // Set the onEnter callback function
-    void onEnter(std::function<void(bobcat::Widget *)> cb){
-        onEnterCb = cb;
-    }
+    /**
+     * @brief Set the onEnter callback function.
+     * @param cb The callback function to set.
+     */
+    void onEnter(std::function<void(bobcat::Widget *)> cb);
 
-    // Set the onLeave callback function
-    void onLeave(std::function<void(bobcat::Widget *)> cb){
-        onLeaveCb = cb;
-    }
+    /**
+     * @brief Set the onLeave callback function.
+     * @param cb The callback function to set.
+     */
+    void onLeave(std::function<void(bobcat::Widget *)> cb);
 
-    // Set the onChange callback function
-    void onChange(std::function<void(bobcat::Widget *)> cb){
-        onChangeCb = cb;
-        when(FL_WHEN_CHANGED);
-        callback([](bobcat::Widget* sender, void* self){
-            FloatInput *in = (FloatInput*) self;
-            in->onChangeCb(in);
-        }, this);
-    }
+    /**
+     * @brief Set the onChange callback function.
+     * @param cb The callback function to set.
+     */
+    void onChange(std::function<void(bobcat::Widget *)> cb);
 
-    // Set the alignment of the float input
-    void align(Fl_Align alignment){
-        Fl_Input::align(alignment);
-        parent()->redraw();
-    }
+    /**
+     * @brief Set the alignment of the float input.
+     * @param alignment The alignment to set.
+     */
+    void align(Fl_Align alignment);
 
-    // Get the label size of the float input
-    Fl_Fontsize labelsize() {
-        return Fl_Input::labelsize();
-    }
+    /**
+     * @brief Get the label size of the float input.
+     * @return Fl_Fontsize The label size of the float input.
+     */
+    Fl_Fontsize labelsize();
 
-    // Set the label size of the float input
-    void labelsize(Fl_Fontsize pix) {
-        Fl_Input::labelsize(pix);
-        parent()->redraw();
-    }
+    /**
+     * @brief Set the label size of the float input.
+     * @param pix The new label size of the float input.
+     */
+    void labelsize(Fl_Fontsize pix);
 
-    // Get the label color of the float input
-    Fl_Color labelcolor() {
-        return Fl_Input::labelcolor();
-    }
+    /**
+     * @brief Get the label color of the float input.
+     * @return Fl_Color The label color of the float input.
+     */
+    Fl_Color labelcolor();
 
-    // Set the label color of the float input
-    void labelcolor(Fl_Color color) {
-        Fl_Input::labelcolor(color);
-        parent()->redraw();
-    }
+    /**
+     * @brief Set the label color of the float input.
+     * @param color The new label color of the float input.
+     */
+    void labelcolor(Fl_Color color);
 
-    // Get the label font of the float input
-    Fl_Font labelfont() {
-        return Fl_Input::labelfont();
-    }
+    /**
+     * @brief Get the label font of the float input.
+     * @return Fl_Font The label font of the float input.
+     */
+    Fl_Font labelfont();
 
-    // Set the label font of the float input
-    void labelfont(Fl_Font f) {
-        Fl_Input::labelfont(f);
-        parent()->redraw();
-    }
+    /**
+     * @brief Set the label font of the float input.
+     * @param f The new label font of the float input.
+     */
+    void labelfont(Fl_Font f);
 
-    // Set the focus to the float input
-    void take_focus() {
-         Fl_Input::take_focus();
-    }
+    /**
+     * @brief Set the focus to the float input.
+     */
+    void take_focus();
 
     // Friend declaration for AppTest struct
     friend struct ::AppTest;
 };
 
 }
-
-#endif
